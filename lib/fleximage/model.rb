@@ -97,7 +97,7 @@ module Fleximage
         
         # Method to determine whether this model has cropping attributes
         def self.croppable?
-          respond_to? :x1 and respond_to? :x2 and respond_to? :y1 and respond_to? :y2
+          respond_to? :image_x1 and respond_to? :image_x2 and respond_to? :image_y1 and respond_to? :image_y2
         end
         
         # validation callback
@@ -330,6 +330,7 @@ module Fleximage
       def operate(&block)
         returning self do
           proxy = ImageProxy.new(load_image, self)
+          proxy.crop(:from => "#{image_x1}x#{image_y1}", :size => "#{image_x2-image_x1}x#{image_y2-image_y1}") if cropped?
           block.call(proxy)
           @output_image = proxy.image
         end
@@ -520,7 +521,7 @@ module Fleximage
 
         # Does this image have cropping parameters?
         def cropped?
-          croppable? and !(self.x1.blank? or self.x2.blank? or self.y1.blank? or self.y2.blank?)
+          croppable? and !(self.image_x1.blank? or self.image_x2.blank? or self.image_y1.blank? or self.image_y2.blank?)
         end
     end
     
