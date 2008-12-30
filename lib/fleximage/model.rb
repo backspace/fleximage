@@ -95,6 +95,11 @@ module Fleximage
           db_store? || image_directory
         end
         
+        # Method to determine whether this model has cropping attributes
+        def self.croppable?
+          respond_to? :x1 and respond_to? :x2 and respond_to? :y1 and respond_to? :y2
+        end
+        
         # validation callback
         validate :validate_image
         
@@ -511,6 +516,11 @@ module Fleximage
             
             raise MasterImageNotFound, message
           end
+        end
+
+        # Does this image have cropping parameters?
+        def cropped?
+          croppable? and !(self.x1.blank? or self.x2.blank? or self.y1.blank? or self.y2.blank?)
         end
     end
     
